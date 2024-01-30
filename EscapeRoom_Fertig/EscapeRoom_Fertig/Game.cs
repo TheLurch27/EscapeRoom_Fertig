@@ -26,25 +26,17 @@ namespace EscapeRoom_Fertig
         // Variablen für die Tür
         public static bool hasExitedDoor = false;
 
-        private enum EMapTiles
-        // Mehr Variablen bzw ein ENUM für die Map
-        {
-            floor = -1,
-            wall,
-            key,
-            openDoor,
-            closedDoor
-        }
+        private const int FLOOR_TILE = 0;
+        private const int WALL_TILE = 1;
+        private const int KEY_TILE = 2;
+        private const int OPEN_DOOR_TILE = 3;
+        private const int CLOSED_DOOR_TILE = 4;
 
-        private static string[] mapTileChar = new string[]
-        // Noch mehr Variablen für die Map. Mensch das hört nicht auf....
-        {
-            "  ", // Boden
-            "██", // Wand
-            "O╣", // Schlüssel
-            "▒▒", // Offene Tür
-            "▓▓"  // Geschlossene Tür
-        };
+        private const string FLOOR_CHAR = "  ";
+        private const string WALL_CHAR = "██";
+        private const string KEY_CHAR = "O╣";
+        private const string OPEN_DOOR_CHAR = "▒▒";
+        private const string CLOSED_DOOR_CHAR = "▓▓";
 
         public void Run()
         // Ersetzt die Main Methode in Program.cs
@@ -55,8 +47,10 @@ namespace EscapeRoom_Fertig
             DrawMap();
         }
 
+        /// <summary>
+        /// Bisschen was fürs Auge.
+        /// </summary>
         private void WelcomeMessage()
-        // Bisschen was fürs Auge.
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(" _____ ____   ____    _    ____  _____   ____   ___   ___  __  __ \r\n| ____/ ___| / ___|  / \\  |  _ \\| ____| |  _ \\ / _ \\ / _ \\|  \\/  |\r\n|  _| \\___ \\| |     / _ \\ | |_) |  _|   | |_) | | | | | | | |\\/| |\r\n| |___ ___) | |___ / ___ \\|  __/| |___  |  _ <| |_| | |_| | |  | |\r\n|_____|____/ \\____/_/   \\_\\_|   |_____| |_| \\_\\\\___/ \\___/|_|  |_|");
@@ -66,8 +60,10 @@ namespace EscapeRoom_Fertig
             Console.ForegroundColor = ConsoleColor.White;
         }
 
+        /// <summary>
+        /// Viel Bla Bla... Erklärung der Tastenbelegung und so.
+        /// </summary>
         private void InstructionMessage()
-        // Viel Bla Bla... Erklärung der Tastenbelegung und so.
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Find the key (");
@@ -94,8 +90,10 @@ namespace EscapeRoom_Fertig
             Console.Clear();
         }
 
+        /// <summary>
+        /// Hier wird aufgefordert die Raum Größe zwischen 5-15 auszuwählen.
+        /// </summary>
         private void MapSize()
-        // Es kommt nicht auf die Größe an... Hab ich gehört! - Hier wir der Spieler aufgefordert die Map Größe zu bestimmen, ja auch TryParse ist mit drin ^^ weil Doofheit der Menschen und so.
         {
             do
             {
@@ -153,11 +151,11 @@ namespace EscapeRoom_Fertig
                     if (y == 0 || x == 0 || y == MAP_SIZE - 1 || x == MAP_SIZE - 1)
                     // y == 0 (Abfrage: Unten), x == 0 (Abfrage: Links), y == MAP_SIZE - 1 (Abfrage: Oben), x == MAP_SIZE - 1 (Abfrage: Rechts)
                     {
-                        map[x, y] = (int)EMapTiles.wall; // Vergibt den Wert einer Wand
+                        map[x, y] = WALL_TILE; // Vergibt den Wert einer Wand
                     }
                     else
                     {
-                        map[x, y] = (int)EMapTiles.floor; // vergibt den Wert einem Boden
+                        map[x, y] = FLOOR_TILE; // vergibt den Wert einem Boden
                     }
                 }
             }
@@ -166,8 +164,11 @@ namespace EscapeRoom_Fertig
             playerY = MAP_SIZE / 2; // setzt die Y Position des Characters auf die Mitte
         }
 
+        /// <summary>
+        /// Push the Button... Hier werden Nägel mit Köpf... äh knöpfen gemacht, oh und die Spieler Position wird Aktualisiert.
+        /// </summary>
+        /// <param name="keyInput">stellt den aufgenommenen Schlüssel dar.</param>
         private void HandleUserInput(ConsoleKeyInfo keyInput)
-        // Push the Button... Hier werden Nägel mit Köpf... äh knöpfen gemacht, oh und die Spieler Position wird Aktualisiert.
         {
             int prevPlayerX = playerX; // Speichert die vergangene X Position des Characters
             int prevPlayerY = playerY; // Speichert die vergangene Y Position des Characters
@@ -200,7 +201,7 @@ namespace EscapeRoom_Fertig
 
             HandleKeyCollection();
 
-            if (isKeyCollected && map[playerX, playerY] == (int)EMapTiles.openDoor)
+            if (isKeyCollected && map[playerX, playerY] == OPEN_DOOR_TILE)
             {
                 Console.Clear();
                 Console.WriteLine("Congratulations! You have escaped the room!");
@@ -214,7 +215,7 @@ namespace EscapeRoom_Fertig
         private static void CheckCharacterPosition()
         {
             // Die Zeile prüft ob der Character außerhalb der Mapbegrenzung liegt oder sich auf der Wand befindet
-            if (playerX < 0 || playerX >= MAP_SIZE || playerY < 0 || playerY >= MAP_SIZE || map[playerY, playerX] == (int)EMapTiles.wall)
+            if (playerX < 0 || playerX >= MAP_SIZE || playerY < 0 || playerY >= MAP_SIZE || map[playerY, playerX] == WALL_TILE)
             {
                 // Setzt die Spielerposition in die Map Begrenzung
                 playerX = Math.Clamp(playerX, 0, MAP_SIZE - 1); // MUSS GEÄNDERT WERDEN, SPIELER KANN AUF DER WAND LAUFEN!
@@ -247,13 +248,13 @@ namespace EscapeRoom_Fertig
                     else
                     {
                         int mapValue = map[x, y]; // Checkt den Wert der aktuellen Position.
-                        if (isKeyCollected && mapValue == (int)EMapTiles.closedDoor) // Wenn der Schlüssel eingesammelt wurde und die Positin eine Geschlossene Tür ist...
+                        if (isKeyCollected && mapValue == CLOSED_DOOR_TILE) // Wenn der Schlüssel eingesammelt wurde und die Positin eine Geschlossene Tür ist...
                         {
-                            Console.Write(mapTileChar[(int)EMapTiles.floor + 1]); // Wird eine Geschlossene Tür geprintet...
+                            Console.Write(FLOOR_CHAR); // Wird eine Geschlossene Tür geprintet...
                         }
                         else
                         {
-                            Console.Write(mapTileChar[mapValue + 1]); // ??
+                            Console.Write(GetMapTileChar(mapValue)); // ??
                         }
                     }
                 }
@@ -274,18 +275,18 @@ namespace EscapeRoom_Fertig
             {
                 keyX = rnd.Next(1, MAP_SIZE - 1); // Hier wird für den Schlüssel eine zufällige X Position generiert
                 keyY = rnd.Next(1, MAP_SIZE - 1); // Das selbe nur für Y
-            } while (map[keyX, keyY] != (int)EMapTiles.floor); // Wiederholt dies solange bis eine Position mit Boden gefunden wurde
+            } while (map[keyX, keyY] != FLOOR_TILE); // Wiederholt dies solange bis eine Position mit Boden gefunden wurde
 
-            map[keyX, keyY] = (int)EMapTiles.key; // Hier wird er geprintet
+            map[keyX, keyY] = KEY_TILE; // Hier wird er geprintet
         }
 
         private static void HandleKeyCollection()
         // Hier wird dafür gesorgt das der Schlüssel auch eine Funktion bekommt - und zwar das Löschen sobald der Character ihn aufsammelt.
         {
-            if (map[playerX, playerY] == (int)EMapTiles.key) // Wenn der Character die selbe Position hat wie der Schlüssel
+            if (map[playerX, playerY] == KEY_TILE) // Wenn der Character die selbe Position hat wie der Schlüssel
             {
                 isKeyCollected = true; // Setzt den Status des eingesammelten SChlüssels auf true.
-                map[playerX, playerY] = (int)EMapTiles.floor; // Entfernt den Schlüssel und macht aus der Position einen Boden.
+                map[playerX, playerY] = FLOOR_TILE; // Entfernt den Schlüssel und macht aus der Position einen Boden.
 
                 OpenDoor(); // Öffnet die Tür (Hoffentlich)
             }
@@ -303,9 +304,9 @@ namespace EscapeRoom_Fertig
             {
                 doorX = rndDoor.Next(0, MAP_SIZE - 2); // Hier wird für die Tür eine zufällige X Position generiert 
                 doorY = rndDoor.Next(0, MAP_SIZE - 2); // The same procedure as ... above, Miss Sophie?
-            } while (map[doorX, doorY] != (int)EMapTiles.wall); // Wiederholt das solange bis eine freie stelle gefunden wurde.
+            } while (map[doorX, doorY] != WALL_TILE); // Wiederholt das solange bis eine freie stelle gefunden wurde.
 
-            map[doorX, doorY] = (int)EMapTiles.closedDoor; // Platziert die geschlossene Tür auf der Map
+            map[doorX, doorY] = CLOSED_DOOR_TILE; // Platziert die geschlossene Tür auf der Map
         }
 
         private static void OpenDoor()
@@ -315,12 +316,31 @@ namespace EscapeRoom_Fertig
             {
                 for (int y = 0; y < MAP_SIZE; y++) // Durchläuft auch ein drittes mal die Spalten der Map
                 {
-                    if (map[x, y] == (int)EMapTiles.closedDoor) // Sobald eine Tür gefunden wurde...
+                    if (map[x, y] == CLOSED_DOOR_TILE) // Sobald eine Tür gefunden wurde...
                     {
-                        map[x, y] = (int)EMapTiles.openDoor; // Wir diese geöffnet und mit einem anderen Symbol gegenzeichnet.
+                        map[x, y] = OPEN_DOOR_TILE; // Wir diese geöffnet und mit einem anderen Symbol gegenzeichnet.
                         return; // Beendet die Methode
                     }
                 }
+            }
+        }
+
+        private string GetMapTileChar(int mapValue)
+        {
+            switch (mapValue)
+            {
+                case FLOOR_TILE:
+                    return FLOOR_CHAR;
+                case WALL_TILE:
+                    return WALL_CHAR;
+                case KEY_TILE:
+                    return KEY_CHAR;
+                case OPEN_DOOR_TILE:
+                    return OPEN_DOOR_CHAR;
+                case CLOSED_DOOR_TILE:
+                    return CLOSED_DOOR_CHAR;
+                default:
+                    return "??";
             }
         }
     }
