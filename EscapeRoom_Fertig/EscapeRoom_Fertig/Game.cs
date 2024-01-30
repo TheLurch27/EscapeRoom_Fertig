@@ -208,15 +208,17 @@ namespace EscapeRoom_Fertig
             }
         }
 
+        /// <summary>
+        /// Player Position... Check! Hier wird geschaut das der Charackter nicht ausbüchsen kann.
+        /// </summary>
         private static void CheckCharacterPosition()
-        // Player Position... Check! Hier wird geschaut das der Charackter nicht ausbüchsen kann.
         {
-            // Die Zeile prüft ob der Character außerhalb der Mapbegrenzung liegt oder sich auzf der Wand befindet
+            // Die Zeile prüft ob der Character außerhalb der Mapbegrenzung liegt oder sich auf der Wand befindet
             if (playerX < 0 || playerX >= MAP_SIZE || playerY < 0 || playerY >= MAP_SIZE || map[playerY, playerX] == (int)EMapTiles.wall)
             {
                 // Setzt die Spielerposition in die Map Begrenzung
-                playerX = Math.Clamp(playerX, 0, MAP_SIZE - 1);
-                playerY = Math.Clamp(playerY, 0, MAP_SIZE - 1);
+                playerX = Math.Clamp(playerX, 0, MAP_SIZE - 1); // MUSS GEÄNDERT WERDEN, SPIELER KANN AUF DER WAND LAUFEN!
+                playerY = Math.Clamp(playerY, 0, MAP_SIZE - 1); // MUSS GEÄNDERT WERDEN, SPIELER KANN AUF DER WAND LAUFEN!
             }
 
             HandleKeyCollection();
@@ -229,8 +231,10 @@ namespace EscapeRoom_Fertig
             }
         }
 
+        /// <summary>
+        /// Ahhhh hier haben wir das Printen der Map und des Characters
+        /// </summary>
         private void PrintMapAndCharacter()
-        // Ahhhh hier haben wir das Printen der Map und des Characters
         {
             for (int y = 0; y < MAP_SIZE; y++) // Durchläuft die Zeilen der Map erneut...
             {
