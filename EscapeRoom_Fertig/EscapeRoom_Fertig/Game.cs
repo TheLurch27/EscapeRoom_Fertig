@@ -39,7 +39,6 @@ namespace EscapeRoom_Fertig
         private const string CLOSED_DOOR_CHAR = "▓▓";
 
         public void Run()
-        // Ersetzt die Main Methode in Program.cs
         {
             WelcomeMessage();
             InstructionMessage();
@@ -121,8 +120,10 @@ namespace EscapeRoom_Fertig
             Console.Clear();
         }
 
+        /// <summary>
+        /// Phantasie ist schön aber es zu sehen mach mehr Spaß! Hier wird die Map in die Konsole geprintet (warum heißt die Methode dann eigentlich "Draw" und nicht "Print" o.O), ach ja die Spielerwegung beginnt auch hier.
+        /// </summary>
         private void DrawMap()
-        // Phantasie ist schön aber es zu sehen mach mehr Spaß! Hier wird die Map in die Konsole geprintet (warum heißt die Methode dann eigentlich "Draw" und nicht "Print" o.O), ach ja die Spielerwegung beginnt auch hier. 
         {
             InitializeMap();
             DrawKey();
@@ -140,8 +141,10 @@ namespace EscapeRoom_Fertig
             }
         }
 
+        /// <summary>
+        /// Hier bekommt die Map langsam Hand und Fuß ähhh Wand und Boden....
+        /// </summary>
         private void InitializeMap()
-        // Hier bekommt die Map langsam Hand und Fuß ähhh Wand und Boden....
         {
             map = new int[MAP_SIZE, MAP_SIZE]; // Initialisiert die Map anhand der Größe die der Spieler eingegeben hat
             for (int y = 0; y < MAP_SIZE; y++) // geht jede Zeile der Map durch
@@ -181,19 +184,23 @@ namespace EscapeRoom_Fertig
                     break;
                 case ConsoleKey.W:
                 case ConsoleKey.UpArrow:
-                    playerY--;
+                    if (map[playerY - 1, playerX] != WALL_TILE) // Prüfe, ob die nächste Position eine Wand ist
+                        playerY--;
                     break;
                 case ConsoleKey.A:
                 case ConsoleKey.LeftArrow:
-                    playerX--;
+                    if (map[playerY, playerX - 1] != WALL_TILE)
+                        playerX--;
                     break;
                 case ConsoleKey.S:
                 case ConsoleKey.DownArrow:
-                    playerY++;
+                    if (map[playerY + 1, playerX] != WALL_TILE)
+                        playerY++;
                     break;
                 case ConsoleKey.D:
                 case ConsoleKey.RightArrow:
-                    playerX++;
+                    if (map[playerY, playerX + 1] != WALL_TILE)
+                        playerX++;
                     break;
             }
 
@@ -201,7 +208,7 @@ namespace EscapeRoom_Fertig
 
             HandleKeyCollection();
 
-            if (isKeyCollected && map[playerX, playerY] == OPEN_DOOR_TILE)
+            if (isKeyCollected && map[playerY, playerX] == OPEN_DOOR_TILE)
             {
                 Console.Clear();
                 Console.WriteLine("Congratulations! You have escaped the room!");
@@ -263,8 +270,10 @@ namespace EscapeRoom_Fertig
             }
         }
 
+        /// <summary>
+        /// Hier wird der Schlüssel zufällig auf der Map gespwant - Hier kein Witz, is ne ernste Sache! ;)
+        /// </summary>
         private void DrawKey()
-        // Hier wird der Schlüssel zufällig auf der Map gespwant - Hier kein Witz, is ne ernste Sache! ;)
         {
             System.Random rnd = new Random(); // Generiert eine Zufällige Zahl
 
@@ -280,8 +289,10 @@ namespace EscapeRoom_Fertig
             map[keyX, keyY] = KEY_TILE; // Hier wird er geprintet
         }
 
+        /// <summary>
+        /// Hier wird dafür gesorgt das der Schlüssel auch eine Funktion bekommt - und zwar das Löschen sobald der Character ihn aufsammelt.
+        /// </summary>
         private static void HandleKeyCollection()
-        // Hier wird dafür gesorgt das der Schlüssel auch eine Funktion bekommt - und zwar das Löschen sobald der Character ihn aufsammelt.
         {
             if (map[playerX, playerY] == KEY_TILE) // Wenn der Character die selbe Position hat wie der Schlüssel
             {
@@ -292,8 +303,10 @@ namespace EscapeRoom_Fertig
             }
         }
 
+        /// <summary>
+        /// Ein Escape Room ohne Tür? Ist wie Brot ohne Nutella...
+        /// </summary>
         private static void DrawDoor()
-        // Ein Escape Room ohne Tür? Ist wie Brot ohne Nutella...
         {
             System.Random rndDoor = new Random(); // auch hier wird wieder ein zufallswert erstellt um die Position der Tür zu ermitteln.
 
@@ -309,8 +322,10 @@ namespace EscapeRoom_Fertig
             map[doorX, doorY] = CLOSED_DOOR_TILE; // Platziert die geschlossene Tür auf der Map
         }
 
+        /// <summary>
+        /// Offen sollte sie am ende auch sein... ansonsten GAME OVER!
+        /// </summary>
         private static void OpenDoor()
-        // Offen sollte sie am ende auch sein... ansonsten GAME OVER!
         {
             for (int x = 0; x < MAP_SIZE; x++) // Durchläuft die Zeilen der Map ein drittes mal o.O
             {
